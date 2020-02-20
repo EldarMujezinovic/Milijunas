@@ -4,29 +4,62 @@ import java.io.FileNotFoundException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import com.omareldar.exceptions.IsValidNicknameException;
+import com.omareldar.exceptions.IsValidUserException;
+
+/**
+ * PROJEKAT MILIJUNAS Main klasa
+ * 
+ * @author Omar Corbic, Eldar Mujezinovic
+ *
+ */
 public class Milijunas {
-	static String trenutniIgrac = " ";
+	static String trenutniIgrac;
 	static boolean userCreated = false;
 	static Scanner input = new Scanner(System.in);
 	static int userChoose;
 
+	public static void wait(double n) {
+		try {
+			Thread.sleep((long) (n * 1000));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void slowPrint(String s) {
+		for (int i = 0; i < s.length(); i++) {
+			if (s.charAt(i) != ' ') {
+				System.out.print(s.charAt(i));
+				wait(0.07);
+			} else {
+				System.out.print(s.charAt(i));
+				wait(0.02);
+			}
+		}
+	}
+
+	/**
+	 * Main metoda u kojoj se poziva meni.
+	 * 
+	 * @param args
+	 * @throws FileNotFoundException
+	 * @throws InputMismatchException
+	 * @throws IsValidUserException
+	 * @throws IsValidNicknameException
+	 */
 	public static void main(String[] args)
 			throws FileNotFoundException, InputMismatchException, IsValidUserException, IsValidNicknameException {
 
-		Pitanja.loading();
-		Odgovori.loading();
-
-		System.out.println("********DOBRODOSLI U MILIJUNAS!********\n");
+	slowPrint("********DOBRODOSLI U MILIJUNAS!********\n");
 		meni();
 
 	}
 
-	public static void meni()
-			throws FileNotFoundException, InputMismatchException, IsValidUserException, IsValidNicknameException {
-
-		System.out.println("\nOdaberite zeljenu opciju:\n1.Novi igrac\n2.Zapocni igru "
-				+ "\n3.Rang lista\n4.Ispis igraca\n5.Detalji igraca\n6.Promijeni igraca\n7.Izlaz\n");
-
+	/**
+	 * Metoda koja provjera unos korisnika
+	 */
+	public static void meniUnos() {
 		int i = -1;
 		do {
 			try {
@@ -37,10 +70,27 @@ public class Milijunas {
 					i = 0;
 				}
 			} catch (InputMismatchException e) {
-				System.out.println("Wrong input, try again!");
+				System.out.println("Pogresan unos, pokusajte ponov(Unesite opciju u razmaku od 1 do 7!");
 			}
 			input.nextLine();
 		} while (i != 0);
+	}
+
+	/**
+	 * Metoda koja nudi razlicite opcije korisniku
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws InputMismatchException
+	 * @throws IsValidUserException
+	 * @throws IsValidNicknameException
+	 */
+	public static void meni()
+			throws FileNotFoundException, InputMismatchException, IsValidUserException, IsValidNicknameException {
+
+		System.out.println("\nOdaberite zeljenu opciju:\n1.Novi igrac\n2.Zapocni igru "
+				+ "\n3.Rang lista\n4.Ispis igraca\n5.Detalji igraca\n6.Promijeni igraca\n7.Izlaz\n");
+		meniUnos();
+
 		switch (userChoose) {
 
 		case 1:
@@ -49,10 +99,9 @@ public class Milijunas {
 			break;
 
 		case 2:
-			zapocniIgru();
+			Igra.zapocniIgru();
 			meni();
 			break;
-
 		case 3:
 			Igrac.rankLista();
 			meni();
@@ -64,17 +113,17 @@ public class Milijunas {
 			break;
 
 		case 5:
-			Igrac.printUserDetails();
+			Igrac.ispisiDetaljeIgraca();
 			meni();
 			break;
 
 		case 6:
-			promijeniIgraca();
+			Igrac.promijeniIgraca();
 			meni();
 			break;
 
 		case 7:
-			System.out.println("********HVALA NA IGRI********");
+			slowPrint("********HVALA NA IGRANJU********");
 			System.exit(0);
 			break;
 
@@ -82,118 +131,25 @@ public class Milijunas {
 
 	}
 
+	/**
+	 * Metoda koja kreira igraca Provjerava: - Da li je validan nickname - Da li je
+	 * validan igrac - Unos korisnika
+	 * 
+	 * @throws InputMismatchException
+	 * @throws IsValidUserException
+	 * @throws IsValidNicknameException
+	 */
 	public static void kreirajIgraca() throws InputMismatchException, IsValidUserException, IsValidNicknameException {
-
-		System.out.println("Unesite nickname: ");
-		String nickname = input.nextLine();
-		boolean isLetter = false;
-		while (isLetter)
-			for (int i = 0; i < nickname.length(); i++) {
-				if (Character.isLetter(nickname.charAt(i))) {
-					isLetter = true;
-				} else {
-					isLetter = false;
-					nickname = input.nextLine();
-					break;
-				}
-			}
-
+		Igrac user = new Igrac();
 		int brojBodova = 0;
 		int rank = 0;
-
-		do {
-			try {
-				if (Igrac.isValidNick(nickname)) {
-
-					if (!Igrac.userIsValid(nickname)) {
-						@SuppressWarnings("unused")
-						Igrac user = new Igrac(nickname, brojBodova, rank);
-						Igrac.imenaIgraca.add(nickname);
-						trenutniIgrac = nickname;
-						userCreated = true;
-						break;
-					} else {
-						throw new IsValidUserException(nickname);
-					}
-				} else {
-					throw new IsValidNicknameException(nickname);
-				}
-			} catch (IsValidNicknameException e) {
-				System.out.println(e.getMessage());
-				nickname = input.next();
-			} catch (IsValidUserException e) {
-				System.out.println(e.getMessage());
-				nickname = input.next();
-			}
-
-		} while (true);
+		System.out.println("Unesite nickname: ");
+		String nickname = user.getImeIgraca();
+		user = new Igrac(nickname, brojBodova, rank);
+		trenutniIgrac = nickname;
+		userCreated = true;
 
 	}
 
-	public static void zapocniIgru() throws FileNotFoundException {
-		if (userCreated) {
 
-			if (!Igrac.jeIgrao(trenutniIgrac)) {
-				System.out.println("Trenutni igrac: " + trenutniIgrac);
-				for (int i = 0; i < Pitanja.pitanja.size(); i++) {
-
-					Pitanja.ucitajPitanje();
-					Odgovori.ponudiOdgovore();
-
-				}
-				Igrac.increaseUserScore(trenutniIgrac, Odgovori.bodovi);
-				Odgovori.bodovi = 0;
-			} else {
-				System.out.println("Nije dozvoljeno igrati vise od jednom na istom profilu!");
-			}
-		} else {
-			System.out.println("Nema kreiranih igraca.");
-		}
-		Igrac.igracJeIgrao(trenutniIgrac);
-		Pitanja.postavljenaPitanja.clear();
-
-	}
-
-	public static void promijeniIgraca() {
-		if (Igrac.igraci.size() <= 1) {
-			System.out.println("Broj kreiranih igraca mora biti veci od 1.");
-		} else {
-			@SuppressWarnings("resource")
-			Scanner input = new Scanner(System.in);
-			int rbIgraca = 0;
-
-			System.out.println(
-					"Trenutni igrac je: " + Milijunas.trenutniIgrac + "\nOdaberite igraca s kojim zelite igrati: ");
-
-			for (String ime : Igrac.imenaIgraca) {
-				if (Milijunas.trenutniIgrac.equals(ime)) {
-					System.out.println(Igrac.imenaIgraca.indexOf(ime) + 1 + ". " + "Trenutni igrac: " + ime);
-					continue;
-				}
-				System.out.println(Igrac.imenaIgraca.indexOf(ime) + 1 + ". " + ime);
-
-			}
-
-			int i = -1;
-			do {
-
-				try {
-					rbIgraca = input.nextInt();
-					if (rbIgraca <= 0 || rbIgraca > Igrac.imenaIgraca.size()) {
-						System.out.println("Unesite broj u razmaku od 1 do " + Igrac.imenaIgraca.size());
-					} else if (rbIgraca == Igrac.imenaIgraca.indexOf(Milijunas.trenutniIgrac) + 1) {
-						System.out.println("Ne mozete ponovo unijeti trenutnog igraca. Molimo unesite ponovo: ");
-					} else {
-						i = 0;
-					}
-				} catch (InputMismatchException e) {
-					System.out.println("Pogresan unos pokusajte ponovo.");
-				}
-				input.nextLine();
-
-			} while (i != 0);
-			Milijunas.trenutniIgrac = Igrac.imenaIgraca.get(rbIgraca - 1);
-
-		}
-	}
 }

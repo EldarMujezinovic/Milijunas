@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"com.omareldar.milijunas","l":"Igra"},{"p":"com.omareldar.milijunas","l":"Igrac"},{"p":"com.omareldar.milijunas","l":"Jokeri"},{"p":"com.omareldar.milijunas","l":"Milijunas"},{"p":"com.omareldar.milijunas","l":"Odgovori"},{"p":"com.omareldar.milijunas","l":"Pitanja"}]

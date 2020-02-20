@@ -1,4 +1,4 @@
-package com.omareldar.milijunas;
+package com.omareldar.exceptions;
 
 @SuppressWarnings("serial")
 public class IsValidNicknameException extends Exception{

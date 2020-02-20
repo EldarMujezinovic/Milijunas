@@ -1,4 +1,4 @@
-package com.omareldar.milijunas;
+package com.omareldar.exceptions;
 
 @SuppressWarnings("serial")
 public class IsValidUserException extends Exception{

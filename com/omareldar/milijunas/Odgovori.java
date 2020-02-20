@@ -3,44 +3,59 @@ package com.omareldar.milijunas;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.TreeMap;
 
+import com.omareldar.exceptions.IsValidNicknameException;
+import com.omareldar.exceptions.IsValidUserException;
+
+/**
+ * Klasa koja ucitava fajl sa odgovorima i posjeduje podatke i funkcije vezane
+ * za odgovore
+ * 
+ * @author Omar Corbic, Eldar Mujezinovic
+ *
+ */
 public class Odgovori {
 	static ArrayList<String> tacniOdgovori = new ArrayList<>();
 	static ArrayList<String> sporedniOdgovori = new ArrayList<>();
 	static Map<Character, String> ponudjeniOdgovori = new TreeMap<Character, String>();
 	static int bodovi = 0;
 	static String v;
+	static String tempOdgovor;
+	static Scanner input = new Scanner(System.in);
 
+	/*
+	 * Metoda koja ucitava fajlove - pitanja i odgovori
+	 */
 	public static void loading() throws FileNotFoundException {
 		try {
-		File file = new File("Odgovori.txt");
-		File file2 = new File("SporedniOdgovori.txt");
-		v = file.getName();
+			File file = new File("Odgovori.txt");
+			File file2 = new File("SporedniOdgovori.txt");
 
-		Scanner read = new Scanner(file);
-		Scanner read2 = new Scanner(file2);
+			Scanner read = new Scanner(file);
+			Scanner read2 = new Scanner(file2);
 
-		while (read.hasNextLine())
-			tacniOdgovori.add(read.nextLine());
+			while (read.hasNextLine())
+				tacniOdgovori.add(read.nextLine());
 
-		while (read2.hasNextLine())
-			sporedniOdgovori.add(read2.nextLine());
+			while (read2.hasNextLine())
+				sporedniOdgovori.add(read2.nextLine());
 
-		read.close();
-		read2.close();
-		} 
-		catch(FileNotFoundException e) {
-			System.err.println("Ne postoji file - " + v);
+			read.close();
+			read2.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("Ne postoji file");
 			e.getStackTrace();
 		}
 
 	}
 
-	public static void ponudiOdgovore() {
+	public static void ponudiOdgovore() throws InputMismatchException, NullPointerException, FileNotFoundException,
+			IsValidUserException, IsValidNicknameException {
 
 		Random rand = new Random();
 		ArrayList<Integer> ponudjeniIndexi = new ArrayList<>();
@@ -49,7 +64,7 @@ public class Odgovori {
 
 		int br = Pitanja.getIndex();
 		int indexOdgovora = 0;
-		
+
 		int max = (br + 1) * 3;
 		int min = ((br + 1) * 3) - 2;
 
@@ -93,57 +108,149 @@ public class Odgovori {
 				ponudjeniOdgovori.put(c, tacniOdgovori.get(br));
 			}
 		}
-				
 		for (Object objectName : ponudjeniOdgovori.keySet()) {
+
 			System.out.print(objectName + ". ");
 			System.out.println(ponudjeniOdgovori.get(objectName));
 
 		}
-		
-		check();
+		System.out.println("--------------");
+		System.out.println("X. Prekid igre");
+		System.out.println("--------------");
+
+		unesi_I_ProvjeriOdgovor();
 		ponudjeniOdgovori.clear();
 
 	}
 
-	public static void check() throws NullPointerException {
+	/*
+	 * Metoda koja prima odgovor kao unos od korisnika Provjerava ispravnost unosa
+	 * korisnika Ova metoda implementira i metodu provjeriOdgovor
+	 */
+
+	public static void unesi_I_ProvjeriOdgovor() throws NullPointerException, InputMismatchException,
+			FileNotFoundException, IsValidUserException, IsValidNicknameException {
 
 		@SuppressWarnings("resource")
 		Scanner input = new Scanner(System.in);
-		String tempOdgovor = input.nextLine();
+		tempOdgovor = input.nextLine();
 		int uslov = -1;
-		while (uslov != 0)
+		while (uslov != 0) {
 			if (tempOdgovor.length() != 1) {
 				System.out.println("Molimo vas unesite jedan od ponudenih odgovora(A, B, C, D): ");
 				tempOdgovor = input.nextLine();
 			} else {
 				uslov = 0;
 			}
-		
-		char odgovor = tempOdgovor.charAt(0); 
-		
+			if (tempOdgovor.charAt(0) == 'x' || tempOdgovor.charAt(0) == 'X') {
+				prekidIgre();
+				break;
+			}
+		}
+		provjeriOdgovor();
+
+	};
+
+	/**
+	 * Metoda koja provjerava da li je odgovor tacan ili ne Dodaje bodove ako je
+	 * tacan Ova metoda implementira metodu konacanOdgovor
+	 * @throws InputMismatchException
+	 * @throws NullPointerException
+	 * @throws IsValidUserException
+	 * @throws IsValidNicknameException
+	 */
+
+	public static void provjeriOdgovor()
+			throws InputMismatchException, NullPointerException, IsValidUserException, IsValidNicknameException {
+		char odgovor = tempOdgovor.charAt(0);
 		int uslov1 = -1;
+		int unosKonacanOdgovor = 0;
+		boolean notExecuted = true;
+		@SuppressWarnings({ "resource", "unused" })
+		Scanner unosKorisnika = new Scanner(System.in);
 		while (uslov1 != 0) {
 			odgovor = tempOdgovor.charAt(0);
-			odgovor = Character.toUpperCase(odgovor); 
+			odgovor = Character.toUpperCase(odgovor);
+			if (notExecuted) {
+				System.out.println("Da li je to vas konacan odgovor: ");
+				System.out.println("1. DA");
+				System.out.println("2. NE");
+				int i = -1;
+				do {
+					try {
+						unosKonacanOdgovor = input.nextInt();
+						if (unosKonacanOdgovor < 1 || unosKonacanOdgovor > 2) {
+							throw new InputMismatchException();
+						} else {
+							i = 0;
+						}
+					} catch (InputMismatchException e) {
+						System.out.println("Pogresan unos, pokusajte ponov(Unesite opciju u razmaku od 1 do 2!");
+					}
+					input.nextLine();
+				} while (i != 0);
+			}
 
 			if (Character.isLetter(odgovor) && ponudjeniOdgovori.containsKey(odgovor)) {
-				if (ponudjeniOdgovori.get(odgovor).equals(tacniOdgovori.get(Pitanja.getIndex()))) {
-					bodovi++;
-					System.out.println("Tacan\n");
-					uslov1 = 0;
+				if (konacanOdgovor(unosKonacanOdgovor)) {
+					notExecuted = true;
+					if (ponudjeniOdgovori.get(odgovor).equals(tacniOdgovori.get(Pitanja.getIndex()))) {
+						bodovi++;
+						System.out.println("Tacan odgovor\n");
+						uslov1 = 0;
+					} else {
+						System.out.println("Netacan odgovor\n");
+						uslov1 = 0;
+					}
 				} else {
-					System.out.println("Netacan\n");
-					uslov1 = 0;
+					System.out.println("Pokusajte ponovo(A, B, C, D): ");
+					notExecuted = false;
+					unosKonacanOdgovor = 1;
+					tempOdgovor = input.nextLine();
 				}
 			} else {
 				System.out.println("Molimo vas unesite jedan od ponudenih odgovora(A, B, C, D): ");
 				tempOdgovor = input.nextLine();
-
 			}
-			;
-
 		}
-		;
+
+	}
+
+	/**
+	 * Metoda koja prekida igru, poslije izvrsavanja ove metode desava se sljedece:
+	 * - korisniku se dodavaju bodovi koje je osvojio - korisnik ne moze ponovo
+	 * igrati - poziva se metoda "meni"
+	 * 
+	 * @throws InputMismatchException
+	 * @throws FileNotFoundException
+	 * @throws IsValidUserException
+	 * @throws IsValidNicknameException
+	 */
+	public static void prekidIgre()
+			throws InputMismatchException, FileNotFoundException, IsValidUserException, IsValidNicknameException {
+		Igrac.povecajBrojBodovaIgracu(Milijunas.trenutniIgrac, Odgovori.bodovi);
+		Odgovori.bodovi = 0;
+		Igrac.igracJeIgrao(Milijunas.trenutniIgrac);
+		Pitanja.postavljenaPitanja.clear();
+		Odgovori.ponudjeniOdgovori.clear();
+		Milijunas.meni();
+	}
+
+	/**
+	 * Metoda koja vraca true ako je unos 1, false ako je 2 ili neki drugi broj.
+	 * 
+	 * @param unos
+	 * @return true ako je unos 1, false ako je unos 2 ili neki drugi broj.
+	 */
+
+	public static boolean konacanOdgovor(int unos) {
+		if (unos == 1) {
+			return true;
+		} else if (unos == 2) {
+			return false;
+		} else {
+			return false;
+		}
 	}
 
 }
