@@ -18,6 +18,7 @@ import java.util.Scanner;
 
 /**
  * Klasa Igrac sadrzi podatke i funkcije Igraca
+ * 
  * @author Omar Corbic, Eldar Mujezinovic
  *
  */
@@ -33,17 +34,18 @@ public class Igrac {
 	private int rank;
 	private boolean igrao;
 	static int brojPrijavljenihIgraca;
+
 	/**
 	 * Default konstruktor
 	 */
 	public Igrac() {
 	}
-	
+
 	/**
-	 * Konstruise i inicijalizira Igraca,
-	 * dodjeljuje mu nickname, bodove i rank
-	 * objekat dodjeljuje u niz objekata "igraci"
-	 * nickname dodjeljuje u niz Stringova "imenaIgraca"
+	 * Konstruise i inicijalizira Igraca, dodjeljuje mu nickname, bodove i rank
+	 * objekat dodjeljuje u niz objekata "igraci" nickname dodjeljuje u niz
+	 * Stringova "imenaIgraca"
+	 * 
 	 * @param ime
 	 * @param bodovi
 	 * @param rang
@@ -58,8 +60,8 @@ public class Igrac {
 		imenaIgraca.add(nickname);
 		brojPrijavljenihIgraca++;
 
-
 	}
+
 	public static void promijeniIgraca() throws FileNotFoundException, IsValidUserException, IsValidNicknameException {
 		if (Igrac.igraci.size() <= 1) {
 			System.out.println("Broj kreiranih igraca mora biti veci od 1.");
@@ -114,7 +116,7 @@ public class Igrac {
 
 		}
 	}
-	
+
 	public static boolean isValidUser(String name) {
 
 		for (int i = 0; i < igraci.size(); i++) {
@@ -124,7 +126,7 @@ public class Igrac {
 		}
 		return false;
 	}
-	
+
 	public String getImeIgraca() {
 		String name = input.nextLine();
 		nickname = name;
@@ -155,7 +157,7 @@ public class Igrac {
 		if (!imenaIgraca.isEmpty()) {
 			System.out.println("Broj prijavljenih igraca: " + brojPrijavljenihIgraca);
 			System.out.println("Ucesnici Milijunasa: \n" + imenaIgraca.toString());
-	}else {
+		} else {
 			System.out.println("Nema prijavljenih igraca.");
 		}
 	}
@@ -176,9 +178,12 @@ public class Igrac {
 				}
 
 			});
+			@SuppressWarnings("unused")
 			int brojac = 1;
 			System.out.println("Rank lista: \n| Nickname | Bodovi |");
-			for (Entry<String, Integer> item : list) {		
+			for (@SuppressWarnings("unused")
+			Entry<String, Integer> item : list) {
+				System.out.println(brojac + ". " + item.getKey() + "  \t" + item.getValue());
 				brojac++;
 			}
 		} else {
@@ -197,6 +202,8 @@ public class Igrac {
 
 	public static void ispisiDetaljeIgraca() {
 		if (!igraci.isEmpty()) {
+			azuriranjeRanka();
+
 			for (int i = 0; i < igraci.size(); i++) {
 				System.out.println(igraci.get(i).toString());
 			}
@@ -222,6 +229,26 @@ public class Igrac {
 				igraci.get(i).setIgrao(true);
 			}
 		}
+	}
+
+	public static void azuriranjeRanka() {
+		
+		int brojIgracaSaViseBodova = 0;
+		Igrac trenutniIgrac;
+		for (int i = 0; i < igraci.size(); i++) {
+			trenutniIgrac = igraci.get(i);
+
+			for (i = 0; i < igraci.size(); i++) {
+				if (igraci.get(i).nickname.equals(trenutniIgrac.nickname)) {
+					continue;
+				} else if (trenutniIgrac.getBrojBodova() < igraci.get(i).getBrojBodova()) {
+					brojIgracaSaViseBodova++;
+				}
+			}
+			
+			trenutniIgrac.setRank(1 + brojIgracaSaViseBodova);
+		}
+
 	}
 
 	@Override

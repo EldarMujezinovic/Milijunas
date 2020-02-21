@@ -115,6 +115,9 @@ public class Odgovori {
 
 		}
 		System.out.println("--------------");
+		System.out.println("J. Pozovi Jokera");
+		System.out.println("--------------");
+		System.out.println("--------------");
 		System.out.println("X. Prekid igre");
 		System.out.println("--------------");
 
@@ -131,72 +134,53 @@ public class Odgovori {
 	public static void unesi_I_ProvjeriOdgovor() throws NullPointerException, InputMismatchException,
 			FileNotFoundException, IsValidUserException, IsValidNicknameException {
 
-		@SuppressWarnings("resource")
-		Scanner input = new Scanner(System.in);
-		tempOdgovor = input.nextLine();
-		int uslov = -1;
-		while (uslov != 0) {
-			if (tempOdgovor.length() != 1) {
-				System.out.println("Molimo vas unesite jedan od ponudenih odgovora(A, B, C, D): ");
-				tempOdgovor = input.nextLine();
-			} else {
-				uslov = 0;
-			}
-			if (tempOdgovor.charAt(0) == 'x' || tempOdgovor.charAt(0) == 'X') {
-				prekidIgre();
-				break;
-			}
+		char odgovor = provjeraInputa();
+		switch(odgovor) {
+		case 'X':
+			prekidIgre();
+			break;
+		case 'J':
+			Jokeri.ponudiJokere();
+			odgovor = provjeraInputa();
+			break;
 		}
-		provjeriOdgovor();
+		provjeriOdgovor(odgovor);
 
 	};
 
 	/**
 	 * Metoda koja provjerava da li je odgovor tacan ili ne Dodaje bodove ako je
 	 * tacan Ova metoda implementira metodu konacanOdgovor
+	 * 
 	 * @throws InputMismatchException
 	 * @throws NullPointerException
 	 * @throws IsValidUserException
 	 * @throws IsValidNicknameException
+	 * @throws FileNotFoundException
 	 */
 
-	public static void provjeriOdgovor()
-			throws InputMismatchException, NullPointerException, IsValidUserException, IsValidNicknameException {
-		char odgovor = tempOdgovor.charAt(0);
+	public static void provjeriOdgovor(char odgovor) throws InputMismatchException, NullPointerException,
+			IsValidUserException, IsValidNicknameException, FileNotFoundException {
 		int uslov1 = -1;
 		int unosKonacanOdgovor = 0;
 		boolean notExecuted = true;
 		@SuppressWarnings({ "resource", "unused" })
 		Scanner unosKorisnika = new Scanner(System.in);
 		while (uslov1 != 0) {
-			odgovor = tempOdgovor.charAt(0);
-			odgovor = Character.toUpperCase(odgovor);
 			if (notExecuted) {
 				System.out.println("Da li je to vas konacan odgovor: ");
 				System.out.println("1. DA");
 				System.out.println("2. NE");
-				int i = -1;
-				do {
-					try {
-						unosKonacanOdgovor = input.nextInt();
-						if (unosKonacanOdgovor < 1 || unosKonacanOdgovor > 2) {
-							throw new InputMismatchException();
-						} else {
-							i = 0;
-						}
-					} catch (InputMismatchException e) {
-						System.out.println("Pogresan unos, pokusajte ponov(Unesite opciju u razmaku od 1 do 2!");
-					}
-					input.nextLine();
-				} while (i != 0);
+				unosKonacanOdgovor = Jokeri.provjeraInputa(unosKonacanOdgovor, 1, 2);
 			}
 
 			if (Character.isLetter(odgovor) && ponudjeniOdgovori.containsKey(odgovor)) {
 				if (konacanOdgovor(unosKonacanOdgovor)) {
 					notExecuted = true;
 					if (ponudjeniOdgovori.get(odgovor).equals(tacniOdgovori.get(Pitanja.getIndex()))) {
-						bodovi++;
+						bodovi+=10;
 						System.out.println("Tacan odgovor\n");
+						Igrac.azuriranjeRanka();
 						uslov1 = 0;
 					} else {
 						System.out.println("Netacan odgovor\n");
@@ -206,12 +190,13 @@ public class Odgovori {
 					System.out.println("Pokusajte ponovo(A, B, C, D): ");
 					notExecuted = false;
 					unosKonacanOdgovor = 1;
-					tempOdgovor = input.nextLine();
+					odgovor = provjeraInputa();
 				}
 			} else {
 				System.out.println("Molimo vas unesite jedan od ponudenih odgovora(A, B, C, D): ");
-				tempOdgovor = input.nextLine();
+				odgovor = provjeraInputa();
 			}
+
 		}
 
 	}
@@ -253,4 +238,54 @@ public class Odgovori {
 		}
 	}
 
+	public static char provjeraInputa() throws FileNotFoundException, IsValidUserException, IsValidNicknameException {
+		@SuppressWarnings("resource")
+		Scanner input1 = new Scanner(System.in);
+		boolean uslov = true;
+		char karakter = ' ';
+		do {
+			try {
+				String 	unos = input1.nextLine(); // A
+				if (unos.length() != 1) {
+					throw new InputMismatchException();
+				}
+				karakter = unos.charAt(0); // a
+				karakter = Character.toUpperCase(karakter);
+				
+				switch (karakter) {
+
+				case 'A':
+					uslov = false;
+					break;
+
+				case 'B':
+					uslov = false;
+					break;
+
+				case 'C':
+					uslov = false;
+					break;
+
+				case 'D':
+					uslov = false;
+					break;
+
+				case 'J':
+					uslov = false;
+					break;
+
+				case 'X':
+					uslov = false;
+					break;
+					
+					default:
+						throw new InputMismatchException();
+				}
+
+			} catch (InputMismatchException e) {
+				System.out.println("Pogresan unos. Unesite ponovo:");
+			}
+		} while (uslov);
+		return karakter;
+	}
 }

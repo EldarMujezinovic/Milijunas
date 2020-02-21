@@ -13,13 +13,11 @@ import com.omareldar.exceptions.IsValidUserException;
 public class Igra extends Milijunas {
 	public static void zapocniIgru() throws FileNotFoundException, InputMismatchException, NullPointerException, IsValidUserException, IsValidNicknameException {
 
-		Pitanja.loading();
-		Odgovori.loading();
 		if (userCreated) {
 
 			if (!Igrac.jeIgrao(trenutniIgrac)) {
 				System.out.println("Trenutni igrac: " + trenutniIgrac);
-				for (int i = 0; i < Pitanja.pitanja.size(); i++) {
+				for (int i = 0; i < 10; i++) {
 
 					Pitanja.ucitajPitanje();
 					Odgovori.ponudiOdgovore();

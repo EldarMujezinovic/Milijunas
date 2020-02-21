@@ -50,7 +50,8 @@ public class Milijunas {
 	 */
 	public static void main(String[] args)
 			throws FileNotFoundException, InputMismatchException, IsValidUserException, IsValidNicknameException {
-
+		Pitanja.loading();
+		Odgovori.loading();
 	slowPrint("********DOBRODOSLI U MILIJUNAS!********\n");
 		meni();
 
