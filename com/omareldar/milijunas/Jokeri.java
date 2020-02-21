@@ -14,9 +14,15 @@ public class Jokeri {
 
 	public static void ponudiJokere() throws InputMismatchException {
 		int odluka = 0;
-
+		Igrac trenutniIgrac = new Igrac();
+		
+		for (int i = 0; i < Igrac.igraci.size(); i++) {
+			if (Igrac.igraci.get(i).getNickname().equals(Milijunas.trenutniIgrac)) {
+				trenutniIgrac = Igrac.igraci.get(i);
+			}
+		}
+		
 		System.out.println("\nDa li zelite iskoristiti joker?\n1.DA\n2.NE\n");
-
 		odluka = provjeraInputa(odluka, 1, 2);
 
 		if (odluka == 1) {
@@ -27,13 +33,32 @@ public class Jokeri {
 
 			switch (izborJokera) {
 			case 1:
+				if(trenutniIgrac.isIgraoJokerPolaPola()) {
+					System.out.println("Imate mogucnost samo jednom odigrati odredjeni joker.");
+					ponudiJokere();
+				}
+				else {
 				jokerPolaPola();
+				trenutniIgrac.setIgraoJokerPolaPola(true);
+				}
 				break;
 			case 2:
+				if(trenutniIgrac.isIgraoJokerPozoviPrijatelja()) {
+					System.out.println("Imate mogucnost samo jednom odigrati odredjeni joker.");
+				}
+				else {
 				jokerPozoviPrijatelja();
+				trenutniIgrac.setIgraoJokerPozoviPrijatelja(true);
+				}
 				break;
 			case 3:
+				if(trenutniIgrac.isIgraoJokerPomocPublike()) {
+					System.out.println("Imate mogucnost samo jednom odigrati odredjeni joker.");
+				}
+				else {
 				jokerPomocPublike();
+				trenutniIgrac.setIgraoJokerPomocPublike(true);
+				}
 				break;
 			}
 		} else {
@@ -89,16 +114,16 @@ public class Jokeri {
 			break;
 		case 1:
 			System.out.println("Pozvali ste prijatelja "+ prijatelji[1]);
-			System.out.println(prijatelji[0]+ " kaze da je tacan odgovor pod "+ slovoTacnogOdgovora);
+			System.out.println(prijatelji[1]+ " kaze da je tacan odgovor pod "+ slovoTacnogOdgovora);
 			break;
 		case 2:
 			slovoRandOdgovora = (char) (rand.nextInt((68 - 65) + 1) + 65);
 			System.out.println("Pozvali ste prijatelja "+ prijatelji[2]);
-			System.out.println(prijatelji[0]+ " kaze da je tacan odgovor pod "+ slovoRandOdgovora);
+			System.out.println(prijatelji[2]+ " kaze da je tacan odgovor pod "+ slovoRandOdgovora);
 			break;
 		case 3:
 			System.out.println("Pozvali ste prijatelja "+ prijatelji[3]);
-			System.out.println(prijatelji[0]+ " kaze da je tacan odgovor pod "+ slovoTacnogOdgovora);
+			System.out.println(prijatelji[3]+ " kaze da je tacan odgovor pod "+ slovoTacnogOdgovora);
 			break;	
 		}	
 		

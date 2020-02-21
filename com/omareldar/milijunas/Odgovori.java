@@ -117,7 +117,6 @@ public class Odgovori {
 		System.out.println("--------------");
 		System.out.println("J. Pozovi Jokera");
 		System.out.println("--------------");
-		System.out.println("--------------");
 		System.out.println("X. Prekid igre");
 		System.out.println("--------------");
 
@@ -168,7 +167,7 @@ public class Odgovori {
 		Scanner unosKorisnika = new Scanner(System.in);
 		while (uslov1 != 0) {
 			if (notExecuted) {
-				System.out.println("Da li je to vas konacan odgovor: ");
+				System.out.println("\nDa li je to vas konacan odgovor: ");
 				System.out.println("1. DA");
 				System.out.println("2. NE");
 				unosKonacanOdgovor = Jokeri.provjeraInputa(unosKonacanOdgovor, 1, 2);
