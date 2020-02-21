@@ -33,7 +33,12 @@ public class Igrac {
 	private int brojBodova;
 	private int rank;
 	private boolean igrao;
+	private boolean igraoJokerPolaPola = false;
+	private boolean igraoJokerPozoviPrijatelja = false;
+	private boolean igraoJokerPomocPublike = false;
 	static int brojPrijavljenihIgraca;
+
+
 
 	/**
 	 * Default konstruktor
@@ -238,19 +243,22 @@ public class Igrac {
 		for (int i = 0; i < igraci.size(); i++) {
 			trenutniIgrac = igraci.get(i);
 
-			for (i = 0; i < igraci.size(); i++) {
-				if (igraci.get(i).nickname.equals(trenutniIgrac.nickname)) {
+			for (int j = 0; j < igraci.size(); j++) {
+				if (igraci.get(j).nickname.equals(trenutniIgrac.nickname)) {
 					continue;
-				} else if (trenutniIgrac.getBrojBodova() < igraci.get(i).getBrojBodova()) {
+				} else if (trenutniIgrac.getBrojBodova() < igraci.get(j).getBrojBodova()) {
 					brojIgracaSaViseBodova++;
 				}
 			}
 			
 			trenutniIgrac.setRank(1 + brojIgracaSaViseBodova);
+			brojIgracaSaViseBodova = 0;
 		}
 
 	}
-
+	
+	
+	
 	@Override
 	public String toString() {
 		return "Igrac - Nickname = " + nickname + ", Bodovi = " + brojBodova + ", Rank = " + rank;
@@ -287,5 +295,27 @@ public class Igrac {
 	public void setIgrao(boolean igrao) {
 		this.igrao = igrao;
 	}
+	public boolean isIgraoJokerPolaPola() {
+		return igraoJokerPolaPola;
+	}
 
+	public void setIgraoJokerPolaPola(boolean igraoJokerPolaPola) {
+		this.igraoJokerPolaPola = igraoJokerPolaPola;
+	}
+
+	public boolean isIgraoJokerPozoviPrijatelja() {
+		return igraoJokerPozoviPrijatelja;
+	}
+
+	public void setIgraoJokerPozoviPrijatelja(boolean igraoJokerPozoviPrijatelja) {
+		this.igraoJokerPozoviPrijatelja = igraoJokerPozoviPrijatelja;
+	}
+
+	public boolean isIgraoJokerPomocPublike() {
+		return igraoJokerPomocPublike;
+	}
+
+	public void setIgraoJokerPomocPublike(boolean igraoJokerPomocPublike) {
+		this.igraoJokerPomocPublike = igraoJokerPomocPublike;
+	}
 }
