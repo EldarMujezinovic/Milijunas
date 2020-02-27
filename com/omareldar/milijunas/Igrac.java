@@ -33,9 +33,9 @@ public class Igrac {
 	private int brojBodova;
 	private int rank;
 	private boolean igrao;
-	private boolean igraoJokerPolaPola = false;
-	private boolean igraoJokerPozoviPrijatelja = false;
-	private boolean igraoJokerPomocPublike = false;
+	private boolean igraoJokerPolaPola;
+	private boolean igraoJokerPozoviPrijatelja;
+	private boolean igraoJokerPomocPublike;
 	static int brojPrijavljenihIgraca;
 
 
@@ -61,9 +61,14 @@ public class Igrac {
 		brojBodova = bodovi;
 		rank = rang;
 		igrao = false;
+		
 		igraci.add(this);
 		imenaIgraca.add(nickname);
 		brojPrijavljenihIgraca++;
+		
+		igraoJokerPolaPola = false;
+		igraoJokerPozoviPrijatelja = false;
+		igraoJokerPomocPublike = false;
 
 	}
 
@@ -239,7 +244,8 @@ public class Igrac {
 	public static void azuriranjeRanka() {
 		
 		int brojIgracaSaViseBodova = 0;
-		Igrac trenutniIgrac;
+		Igrac trenutniIgrac = new Igrac();
+		
 		for (int i = 0; i < igraci.size(); i++) {
 			trenutniIgrac = igraci.get(i);
 
@@ -256,7 +262,14 @@ public class Igrac {
 		}
 
 	}
-	
+	public static Igrac pronadjiIgraca(String ime) {
+		for (int i = 0; i < igraci.size(); i++) {
+			if (igraci.get(i).getNickname().equals(ime)) {
+				return igraci.get(i);
+			}
+		}
+		return null;
+	}
 	
 	
 	@Override
