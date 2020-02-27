@@ -16,11 +16,7 @@ public class Jokeri {
 		int odluka = 0;
 		Igrac trenutniIgrac = new Igrac();
 		
-		for (int i = 0; i < Igrac.igraci.size(); i++) {
-			if (Igrac.igraci.get(i).getNickname().equals(Milijunas.trenutniIgrac)) {
-				trenutniIgrac = Igrac.igraci.get(i);
-			}
-		}
+		trenutniIgrac = Igrac.pronadjiIgraca(Milijunas.trenutniIgrac);
 		
 		System.out.println("\nDa li zelite iskoristiti joker?\n1.DA\n2.NE\n");
 		odluka = provjeraInputa(odluka, 1, 2);
